@@ -55,14 +55,18 @@
 	$day = 0;
 	$month = 0;
 	$week = 0;
+	$isFirstWeek=1;
 	// create entries for each session and its questions
 	foreach ($sessions as $session_id => $session_date) {
 		$date = DateTime::createFromFormat("m/d/y H:i", $session_date);
 		$newDayOfWeek = (int) date("w", $date->getTimestamp());
 		$newDay = (int) date("j", $date->getTimestamp());
 		$newMonth = (int) date("n", $date->getTimestamp());
-		if ($newDayOfWeek < $dayOfWeek || $newDay >= $day + 7 || $newMonth > $month) {
+		//if ($newDayOfWeek < $dayOfWeek || $newDay >= $day + 7 || $newMonth > $month) {
+		if ($newDayOfWeek < $dayOfWeek || $newDay >= $day + 7 || $isFirstWeek) {
+			$isFirstWeek=0;
 			$week++;
+		
 			echo "
 				<tr>
 					<th><a name='week$week'>Week $week</a></th>
@@ -72,6 +76,9 @@
 					<td></td>
 				</tr>
 			";
+		}
+		if ($week!=$assignment_week && $assignment_week > -1) {
+			continue;
 		}
 		$dayOfWeek = $newDayOfWeek;
 		$day = $newDay;
@@ -105,7 +112,7 @@
 				$checked = "";
 				if ($ignore_question == 0) {
 					// only check group votes in the week we're creating an assignment for
-					if ($gv && ($assignment_week == $week || $assignment_week == -1)) {
+					if ($gv && $assignment_week > -1 && $assignment_week == $week) {
 						$checked = "checked";
 					}
 					$gv = !$gv;
@@ -114,10 +121,10 @@
 				echo "
 					<tr>
 						<td></td>
-						<td>" . $question_number . "</td>
-						<td><a href='pictures/" . $screen_picture . "' title='Picture of screen' data-lightbox='" . $question_id . "'><img src='pictures/" . $screen_picture . "' alt='Picture of screen' width='175' height='100'></td>
-						<td><a href='pictures/" . $chart_picture . "' title='Chart of responses' data-lightbox='" . $question_id . "'><img src='pictures/" . $chart_picture . "' alt='Chart of responses' width='175' height='100'></td>
-						<td><input type='checkbox' name='questions[]' value='" . $question_id . "' $checked></td>
+						<td>$question_number</td>
+						<td><a href='pictures/$screen_picture' title='Picture of screen' data-lightbox='$question_id'><img src='pictures/$screen_picture' alt='Picture of screen' width='175' height='100'></td>
+						<td><a href='pictures/$chart_picture' title='Chart of responses' data-lightbox='$question_id'><img src='pictures/$chart_picture' alt='Chart of responses' width='175' height='100'></td>
+						<td><input type='checkbox' name='questions[]' value='$question_id' $checked></td>
 					</tr>
 				";
 			}

@@ -7,9 +7,7 @@
 	if (!isCookieValidLoginWithType($conn, "admin")) {
 		header("Location: home.php");
 	}
-	
-	createHeader("Session");
-	
+		
 	$session_id = $_GET["session_id"];
 
 	$query = "
@@ -23,12 +21,16 @@
 	$stmt->bind_result($section_id);
 	$stmt->fetch();
 	$stmt->close();
+
+createHeader("Session", true, "<a href='section.php?section_id=$section_id'> Back to Sessions and Assignments </a>");
+
 ?>
 <h1>
 	Questions
 </h1>
 <table>
 <form action='endeditsession.php' method='post'>
+	<input type="hidden" name="session_id" value="<?= $_GET[session_id] ?>"/>
 	<tr>
 		<th>Ignore?</th>
 		<th>#</th>
@@ -131,9 +133,14 @@
 	}
 ?>
 </table>
+	<p>
 	<input type='submit' value='Update'>
+	</p>
 </form>
 <?php
 	$conn->close();
-	createFooter(true, "section.php?section_id=$section_id");
+if (isset($_GET['message'])) {
+	echo "<h2> $_GET[message] </h2>";
+}
+createFooter(true, "section.php?section_id=$section_id");
 ?>

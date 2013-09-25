@@ -61,6 +61,7 @@
 	function checkAdmin($conn) {
 		if (!isCookieValidLoginWithType($conn, "admin")) {
 			header("Location: home.php");
+		}
 	}
 	
 	function DateFromUTC($utc) {

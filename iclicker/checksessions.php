@@ -13,6 +13,7 @@ $query="
 SELECT sessions.session_tag
 FROM sessions, sections
 WHERE sessions.section_id=sections.section_id
+AND sessions.section_id=?
 ";
 
 $stmt = $conn->prepare($query) or die("Couldn't prepare query. " . $conn->error);
